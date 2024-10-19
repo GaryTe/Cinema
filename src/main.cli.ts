@@ -16,6 +16,7 @@ function bootstrap() {
     new ImportCommand(),
     new GenerateCommand()
   ]);
+
   cliApplication.processCommand(process.argv);
 }
 

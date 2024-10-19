@@ -25,3 +25,13 @@ export const NamesCities = {
   Hamburg: 'Hamburg',
   Dusseldorf: 'Dusseldorf'
 } as const;
+
+export const ComponentForCLI = {
+  RestApplication: Symbol.for('RestApplication'),
+  RestConfig: Symbol.for('RestConfig'),
+  PinoLogger: Symbol.for('PinoLogger'),
+  MongoDatabaseClient: Symbol.for('MongoDatabaseClient'),
+  UserService: Symbol.for('UserService'),
+  UserRepository: Symbol.for('UserRepository'),
+  UserModel: Symbol.for('UserModel')
+} as const;

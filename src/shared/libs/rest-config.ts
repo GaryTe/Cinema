@@ -4,7 +4,7 @@ import {injectable, inject} from 'inversify';
 import { Config, Logger } from '../interface/index.js';
 import { mistake } from '../util/index.js';
 import { RestSchema, configRestSchema } from './rest-schema.js';
-import { Component } from '../type/index.js';
+import { Component } from '../enum/index.js';
 
 @injectable()
 export class RestConfig implements Config<RestSchema> {

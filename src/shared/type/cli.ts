@@ -4,7 +4,7 @@ import { Command } from '../interface/index.js';
 export type User = {
   name: string;
   email: string;
-  avatar: string;
+  avatar?: string;
   password: string;
 };
 
