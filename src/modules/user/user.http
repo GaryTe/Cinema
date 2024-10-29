@@ -1,0 +1,23 @@
+# Creating a new user
+POST  http://localhost:3000/user/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Sveta",
+  "email": "Sveta@mail.com",
+  "password": "4891"
+}
+
+###
+# User authentication and authorization
+GET   http://localhost:3000/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "Sveta@mail.com",
+  "password": "4891"
+}
+
+###
+## User status check
+GET   http://localhost:3000/user/authentication HTTP/1.1

@@ -5,16 +5,15 @@ export class CreateFilmDto {
   public nameFilm: string;
   public description: string;
   public genres: Genres;
-  public release: Date;
-  public rating: number;
+  public release: string;
   public previewVideo: string;
   public video: string;
   public actors: string[];
   public director: string;
   public movieDuration: string;
-  public numberComments: number;
   public user: User;
   public poster: string;
   public backgroundImag: string;
   public backgroundColor: string;
+  public promoFilm?: boolean;
 }

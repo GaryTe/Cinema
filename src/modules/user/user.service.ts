@@ -1,11 +1,10 @@
 import { DocumentType } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 
-import { UserServiceInterface, UserRepositoryInterface } from '../../shared/interface/index.js';
+import { UserServiceInterface, UserRepositoryInterface, Logger } from '../../shared/interface/index.js';
 import { UserEntity } from './user.entity.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
+import { CreateUserDto, LoginUserDto } from './index.js';
 import { Component } from '../../shared/enum/index.js';
-import { Logger } from '../../shared/interface/index.js';
 
 @injectable()
 export class UserService implements UserServiceInterface {
@@ -17,7 +16,15 @@ export class UserService implements UserServiceInterface {
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
 
     const user = await this.repository.findOrCreate(dto, salt);
-    this.logger.info(`New user created with ${user.email}`);
     return user;
+  }
+
+  public async login(dto: LoginUserDto): Promise<string> {
+    const result = await this.repository.login(dto);
+    return result;
+  }
+
+  public async authentication(): Promise<void> {
+    this.logger.warn('method not implemented');
   }
 }

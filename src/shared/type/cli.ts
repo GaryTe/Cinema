@@ -27,13 +27,6 @@ export type Film = {
   backgroundColor: string;
 };
 
-export type Comment = {
-  commentText: string;
-  rating: number;
-  dataPublication: string;
-  authorComment: User;
-};
-
 export type MockServerData = {
   nameFilm: string[];
   description: string[];

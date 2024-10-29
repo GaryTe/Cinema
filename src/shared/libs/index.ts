@@ -6,3 +6,6 @@ export * from './logger.js';
 export * from './rest-config.js';
 export * from './rest-schema.js';
 export * from './mongo-database-client.js';
+export * from './base-controller.abstract.js';
+export * from './http-error.js';
+export * from './app-exception-filter.js';
