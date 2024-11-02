@@ -8,6 +8,7 @@ import { Component, HttpMethod } from '../../shared/enum/index.js';
 import {RequestParams, RequestBody} from '../../shared/type/index.js';
 import { fillDTO } from '../../shared/util/index.js';
 import { CreateUserDto, LoginUserDto, UserRto } from './index.js';
+import {ValidateDtoMiddleware, UploadFileMiddleware} from '../../shared/middleware/index.js';
 
 
 @injectable()
@@ -21,9 +22,33 @@ export class UserController extends BaseController {
 
     this.logger.info('Register routes for UserController');
 
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.login });
+    this.addRoute({
+      path: '/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ]
+    });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
+    });
     this.addRoute({ path: '/authentication', method: HttpMethod.Get, handler: this.authentication });
+  }
+
+  public async uploadAvatar(req: Request, res: Response) {
+    this.created(res, {
+      filepath: req.file?.path
+    });
   }
 
   public async create(

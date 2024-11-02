@@ -3,16 +3,11 @@ POST  http://localhost:3000/comment/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "text": "Фильм отличный. Советую посмотреть.",
   "rating": 10,
-  "idFilm": "671f53f54f8b4282115477a5",
-  "idUser": "671de37079c27a5f656cd2ed"
+  "idFilm": "671f53e94f8b4282115477a2",
+  "idUser": "671de33b79c27a5f656cd2ea"
 }
 
 ###
 # Getting a list of comments for a specific movie
-GET   http://localhost:3000/comment/671f53714f8b428211547799 HTTP/1.1
-
-###
-## User status check
-GET   http://localhost:3000/user/authentication HTTP/1.1
+GET   http://localhost:3000/comment/671f53e94f8b4282115477a2 HTTP/1.1

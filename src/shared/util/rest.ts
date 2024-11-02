@@ -1,8 +1,10 @@
 import * as crypto from 'node:crypto';
 import {ClassConstructor, plainToInstance} from 'class-transformer';
 import {DocumentType} from '@typegoose/typegoose';
+import {ValidatorConstraint, ValidatorConstraintInterface} from 'class-validator';
 
 import {CommentEntity} from '../../modules/comment/comment.entity.js';
+import {TAPY_FORMAT, ALL_FORMAT} from '../const/index.js';
 
 export function getMongoURI(
   username: string,
@@ -38,3 +40,44 @@ export const countRating = (commentsList: DocumentType<CommentEntity>[] | []) =>
   }
   return count;
 };
+
+@ValidatorConstraint({ name: 'avatar', async: false })
+export class ValidationFormatAvatar implements ValidatorConstraintInterface {
+  validate(avatar: string) {
+    let isValue = false;
+    const valuesList = avatar.split('.');
+
+    isValue = TAPY_FORMAT.includes(valuesList[valuesList.length - 1]);
+
+    return isValue;
+  }
+}
+
+@ValidatorConstraint({ name: 'poster', async: false })
+export class ValidationFormat implements ValidatorConstraintInterface {
+  validate(value: string) {
+    let isValue = false;
+    const valuesList = value.split('.');
+
+    isValue = ALL_FORMAT.includes(valuesList[valuesList.length - 1]);
+
+    return isValue;
+  }
+}
+
+@ValidatorConstraint({ name: 'actors', async: false })
+export class ValidationActors implements ValidatorConstraintInterface {
+  validate(actors: string[]) {
+    let isValue = false;
+
+    actors.forEach((value) => {
+      if(typeof value !== 'string') {
+        isValue = false;
+        return;
+      }
+      isValue = true;
+    });
+
+    return isValue;
+  }
+}

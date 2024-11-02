@@ -4,7 +4,7 @@ import { Response, Router, Request, NextFunction } from 'express';
 import { UserEntity, CreateUserDto, LoginUserDto } from '../../modules/user/index.js';
 import { FilmEntity, CreateFilmDto, RedactionFilmDto } from '../../modules/film/index.js';
 import {_Film} from '../type/index.js';
-import {SelecteFilmEntity, ValueFavoriteFilm} from '../../modules/selecte-film/index.js';
+import {SelecteFilmEntity, ValueFavoriteFilmDto} from '../../modules/selecte-film/index.js';
 import {CreateCommentDto, CommentEntity} from '../../modules/comment/index.js';
 import {HttpMethod} from '../enum/index.js';
 
@@ -35,6 +35,7 @@ export interface UserRepositoryInterface {
   findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
   findOrCreate(user: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   login(dto: LoginUserDto): Promise<string>;
+  exists(idUser: string): Promise<boolean>;
 }
 
 export interface FilmServiceInterface {
@@ -55,18 +56,19 @@ export interface FilmRepositoryInterface {
   getAllFilmsOfGenre(count: number, genre: string): Promise<DocumentType<FilmEntity>[] | []>;
   show(idFilm: string): Promise<DocumentType<FilmEntity>>;
   showPromoFilm(): Promise<DocumentType<FilmEntity> | null>;
+  exists(idFilm: string): Promise<boolean>;
 }
 
 export interface SelecteFilmServiceInterface {
-  create(data: ValueFavoriteFilm): Promise<_Film>;
-  delet(data: ValueFavoriteFilm): Promise<_Film>;
-  getAllFilms(data: ValueFavoriteFilm): Promise<_Film[] | []>;
+  create(data: ValueFavoriteFilmDto): Promise<_Film>;
+  delet(data: ValueFavoriteFilmDto): Promise<_Film>;
+  getAllFilms(data: ValueFavoriteFilmDto): Promise<_Film[] | []>;
 }
 
 export interface SelecteFilmRepositoryInterface {
-  create(data: ValueFavoriteFilm): Promise<DocumentType<SelecteFilmEntity>>;
-  delet(data: ValueFavoriteFilm): Promise<DocumentType<SelecteFilmEntity>>;
-  getAllFilms(data: ValueFavoriteFilm): Promise<DocumentType<SelecteFilmEntity>[] | []>;
+  create(data: ValueFavoriteFilmDto): Promise<DocumentType<SelecteFilmEntity>>;
+  delet(data: ValueFavoriteFilmDto): Promise<DocumentType<SelecteFilmEntity>>;
+  getAllFilms(data: ValueFavoriteFilmDto): Promise<DocumentType<SelecteFilmEntity>[] | []>;
 }
 
 export interface CommentServiceInterface {
@@ -80,10 +82,15 @@ export interface CommentRepositoryInterface {
   delet(idFilm: string): Promise<void>;
 }
 
+export interface Middleware {
+  execute(req: Request, res: Response, next: NextFunction): void;
+}
+
 export interface Route {
   path: string;
   method: HttpMethod;
   handler: (req: Request, res: Response, next: NextFunction) => void;
+  middlewares?: Middleware[];
 }
 
 export interface Controller {
@@ -96,4 +103,8 @@ export interface Controller {
 
 export interface ExceptionFilter {
   catch(error: Error, req: Request, res: Response, next:NextFunction): void;
+}
+
+export interface DocumentExists {
+  exists(documentId: string): Promise<boolean>;
 }

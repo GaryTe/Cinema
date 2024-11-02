@@ -30,7 +30,14 @@ export class UserRepository implements UserRepositoryInterface {
     const existedUser = await this.findByEmail(dto.email);
 
     if (existedUser) {
-      return existedUser;
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        `A user with this email: ${existedUser.email} is exists`,
+        {
+          where: 'user.respository.ts',
+          line: '33'
+        }
+      );
     }
 
     return await this.create(dto, salt);
@@ -62,5 +69,9 @@ export class UserRepository implements UserRepositoryInterface {
     }
 
     return 'Token';
+  }
+
+  public async exists(idUser: string): Promise<boolean> {
+    return (await this.userModel.exists({_id: idUser})) !== null;
   }
 }

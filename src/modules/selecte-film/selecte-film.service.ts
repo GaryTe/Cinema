@@ -5,7 +5,7 @@ import {
   SelecteFilmRepositoryInterface,
   FilmServiceInterface
 } from '../../shared/interface/index.js';
-import {ValueFavoriteFilm} from './index.js';
+import {ValueFavoriteFilmDto} from './index.js';
 import {Component} from '../../shared/enum/index.js';
 import {_Film} from '../../shared/type/index.js';
 
@@ -16,19 +16,19 @@ export class SelecteFilmService implements SelecteFilmServiceInterface {
     @inject(Component.FilmService) private readonly filmService: FilmServiceInterface
   ) {}
 
-  public async create(data: ValueFavoriteFilm): Promise<_Film> {
+  public async create(data: ValueFavoriteFilmDto): Promise<_Film> {
     const favoriteFilm = await this.repository.create(data);
     const film = await this.filmService.show(favoriteFilm.idFilm);
     return film;
   }
 
-  public async delet(data: ValueFavoriteFilm): Promise<_Film> {
+  public async delet(data: ValueFavoriteFilmDto): Promise<_Film> {
     const favoriteFilm = await this.repository.delet(data);
     const film = await this.filmService.show(favoriteFilm.idFilm);
     return film;
   }
 
-  public async getAllFilms(data: ValueFavoriteFilm): Promise<_Film[] | []> {
+  public async getAllFilms(data: ValueFavoriteFilmDto): Promise<_Film[] | []> {
     const favoriteFilmsList = await this.repository.getAllFilms(data);
     const _filmsList = [];
 

@@ -1,4 +1,5 @@
 import {Ref} from '@typegoose/typegoose';
+import { ParamsDictionary } from 'express-serve-static-core';
 
 import {Genres} from '../enum/index.js';
 import {UserEntity} from '../../modules/user/index.js';
@@ -33,4 +34,13 @@ export type _Film = {
   poster: string;
   backgroundImag: string;
   backgroundColor: string;
+}
+
+export type ParamsFilmId ={
+  idFilm: string;
+} | ParamsDictionary
+
+export type RequestQuery = {
+  limit?: string;
+  genre?: string;
 }
