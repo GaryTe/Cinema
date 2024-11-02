@@ -98,4 +98,8 @@ export class FilmRepository implements FilmRepositoryInterface {
 
     return film;
   }
+
+  public async exists(idFilm: string): Promise<boolean> {
+    return (await this.filmModel.exists({_id: idFilm})) !== null;
+  }
 }

@@ -4,7 +4,6 @@ import { inject, injectable } from 'inversify';
 import {FilmServiceInterface, FilmRepositoryInterface, CommentRepositoryInterface} from '../../shared/interface/index.js';
 import {CreateFilmDto, FilmEntity, RedactionFilmDto} from './index.js';
 import {Component} from '../../shared/enum/index.js';
-import {AMOUNT_RETURN_FILM} from '../../shared/const/index.js';
 import {countRating} from '../../shared/util/index.js';
 import {_Film} from '../../shared/type/index.js';
 
@@ -40,8 +39,7 @@ export class FilmService implements FilmServiceInterface {
     return film;
   }
 
-  public async getAllFilms(count: number): Promise<_Film[] | []> {
-    const limit = count ?? AMOUNT_RETURN_FILM;
+  public async getAllFilms(limit: number): Promise<_Film[] | []> {
     const _filmsList = [];
 
     const filmsList = await this.repository.getAllFilms(limit);
@@ -63,8 +61,7 @@ export class FilmService implements FilmServiceInterface {
     return _filmsList;
   }
 
-  public async getAllFilmsOfGenre(count: number, genre: string): Promise<_Film[] | []> {
-    const limit = count ?? AMOUNT_RETURN_FILM;
+  public async getAllFilmsOfGenre(limit: number, genre: string): Promise<_Film[] | []> {
     const _filmsList = [];
 
     const filmsList = await this.repository.getAllFilmsOfGenre(limit, genre);

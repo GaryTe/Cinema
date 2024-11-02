@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "nameFilm": "Бестрашный",
-  "description": "Про парня",
+  "description": "Про парня попавшего в концлагерь.",
   "genres": "documentary",
   "release": "01.11.2024",
   "previewVideo": "https://www.youtube.com/preview/Бестрашный",
@@ -16,7 +16,7 @@ Content-Type: application/json
       ],
   "director": "Макар",
   "movieDuration": "120 m",
-  "user": "671de37079c27a5f656cd2ed",
+  "user": "671de37079c27a5f656cd2",
   "poster": "Бестрашный.jpg",
   "backgroundImag": "Бестрашный.jpg",
   "backgroundColor": "gray"
@@ -24,16 +24,16 @@ Content-Type: application/json
 
 ###
 # Film editing
-PATCH http://localhost:3000/film/redaction/671f53714f8b428211547799 HTTP/1.1
+PATCH http://localhost:3000/film/redaction/671f53714f8b428211547786 HTTP/1.1
 Content-Type: application/json
 
 {
-  "promoFilm": true
+  "promoFilm": 3
 }
 
 ###
 ## Deleting a movie
-DELETE http://localhost:3000/film/671f53af4f8b42821154779c HTTP/1.1
+DELETE http://localhost:3000/film/671f53af4f8b428211547789 HTTP/1.1
 
 ###
 #Getting a list of movies
@@ -41,11 +41,11 @@ Get http://localhost:3000/film/list?limit=8 HTTP/1.1
 
 ###
 # Getting a list of films of a certain genre
-Get http://localhost:3000/film/list/genre?genre=crime&limit=3 HTTP/1.1
+Get http://localhost:3000/film/list/genre?genre=ui&limit=3 HTTP/1.1
 
 ###
 # Get detailed information on the film
-GET http://localhost:3000/film/show/671f53714f8b428211547799 HTTP/1.1
+GET http://localhost:3000/film/show/671f53714f8b428211547744 HTTP/1.1
 
 ###
 # Get detailed information on the promo-film

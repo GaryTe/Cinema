@@ -5,7 +5,8 @@ Content-Type: application/json
 {
   "name": "Sveta",
   "email": "Sveta@mail.com",
-  "password": "4891"
+  "avatar": "svets.jpg",
+  "password": "4891SP"
 }
 
 ###
@@ -15,9 +16,21 @@ Content-Type: application/json
 
 {
   "email": "Sveta@mail.com",
-  "password": "4891"
+  "password": "4891SP"
 }
 
 ###
 ## User status check
 GET   http://localhost:3000/user/authentication HTTP/1.1
+
+###
+## Отправить изображение
+POST http://localhost:3000/user/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="avatar.jpg"
+Content-Type: image/png
+
+< C:\Users\User\Desktop\what-to-watch\markup\img\avatar.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

@@ -4,3 +4,16 @@ export const AMOUNT_RETURN_FILM = 60;
 export const SORT_DESCENDING = -1;
 export const AMOUNT_RETURN_COMMENT = 50;
 export const DEFAULT_CONTENT_TYPE = 'application/json';
+export const TAPY_FORMAT = ['jpg', 'png'];
+export const ALL_FORMAT = ['jpg'];
+export const GENRES_LIST = [
+  'comedy',
+  'crime',
+  'documentary',
+  'drama',
+  'horror',
+  'family',
+  'romance',
+  'scifi',
+  'thriller'
+];
