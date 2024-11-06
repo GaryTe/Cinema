@@ -3,10 +3,11 @@ import { Response, Router, Request, NextFunction } from 'express';
 
 import { UserEntity, CreateUserDto, LoginUserDto } from '../../modules/user/index.js';
 import { FilmEntity, CreateFilmDto, RedactionFilmDto } from '../../modules/film/index.js';
-import {_Film} from '../type/index.js';
+import {_Film, AccessAndRefreshToken, TokenPayload} from '../type/index.js';
 import {SelecteFilmEntity, ValueFavoriteFilmDto} from '../../modules/selecte-film/index.js';
 import {CreateCommentDto, CommentEntity} from '../../modules/comment/index.js';
 import {HttpMethod} from '../enum/index.js';
+import {RefreshTokenEntity} from '../../modules/refresh-token/index.js';
 
 export interface Logger {
   info(message: string, ...args: unknown[]): void;
@@ -26,15 +27,12 @@ export interface DatabaseClient {
 
 export interface UserServiceInterface {
   create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
-  login(dto: LoginUserDto): Promise<string>;
-  authentication(): Promise<void>;
 }
 
 export interface UserRepositoryInterface {
   create(user: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
   findOrCreate(user: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
-  login(dto: LoginUserDto): Promise<string>;
   exists(idUser: string): Promise<boolean>;
 }
 
@@ -107,4 +105,22 @@ export interface ExceptionFilter {
 
 export interface DocumentExists {
   exists(documentId: string): Promise<boolean>;
+}
+
+export interface Authentication {
+  authenticate(user: UserEntity): Promise<AccessAndRefreshToken>;
+  verify(dto: LoginUserDto): Promise<UserEntity>;
+}
+
+export interface RefreshTokenRepositoryInterface {
+  create(data: {refreshToken: string, idUser: string}): Promise<DocumentType<RefreshTokenEntity>>;
+  delet(data: {refreshToken: string, idUser: string}): Promise<void>;
+  find(data: {refreshToken: string, idUser: string}): Promise<DocumentType<RefreshTokenEntity>>;
+}
+
+export interface RefreshTokenServiceInterface {
+  editing(data: TokenPayload): Promise<{
+    accessToken: string,
+    refreshToken: string
+  }>
 }

@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
 import { BaseController } from '../../shared/libs/index.js';
-import { Logger, CommentServiceInterface, UserRepositoryInterface, FilmRepositoryInterface } from '../../shared/interface/index.js';
+import { Logger, CommentServiceInterface, FilmRepositoryInterface } from '../../shared/interface/index.js';
 import { Component, HttpMethod } from '../../shared/enum/index.js';
 import {RequestParams, RequestBody, ParamsFilmId} from '../../shared/type/index.js';
 import { fillDTO } from '../../shared/util/index.js';
@@ -12,7 +12,8 @@ import {
   ValidateDtoObjectIdMiddleware,
   DtoDocumentExistsMiddleware,
   ValidateParamsObjectIdMiddleware,
-  ParamsDocumentExistsMiddleware
+  ParamsDocumentExistsMiddleware,
+  PrivateRouteMiddleware
 } from '../../shared/middleware/index.js';
 
 
@@ -21,7 +22,6 @@ export class CommentController extends BaseController {
   constructor(
     @inject(Component.PinoLogger) protected readonly logger: Logger,
     @inject(Component.CommentService) private readonly commentService: CommentServiceInterface,
-    @inject(Component.UserRepository) private readonly userRepository: UserRepositoryInterface,
     @inject(Component.FilmRepository) private readonly filmRepository: FilmRepositoryInterface,
   ) {
     super(logger);
@@ -33,9 +33,9 @@ export class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto),
-        new ValidateDtoObjectIdMiddleware(['idUser', 'idFilm']),
-        new DtoDocumentExistsMiddleware(this.userRepository, 'User', 'idUser'),
+        new ValidateDtoObjectIdMiddleware(['idFilm']),
         new DtoDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
       ]
     });
@@ -51,10 +51,10 @@ export class CommentController extends BaseController {
   }
 
   public async create(
-    { body }: Request<RequestParams, RequestBody, CreateCommentDto>,
+    { body, tokenPayload }: Request<RequestParams, RequestBody, CreateCommentDto>,
     res: Response
   ): Promise<void> {
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({...body, idUser: tokenPayload.id});
 
     this.logger.info('Comment created');
     this.created(res, fillDTO(CommentRto, comment));

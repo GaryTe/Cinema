@@ -1,14 +1,20 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-import {StatusCodes} from 'http-status-codes';
 
-import { BaseController, RestSchema, HttpError } from '../../shared/libs/index.js';
-import { Logger, UserServiceInterface, Config } from '../../shared/interface/index.js';
+import { BaseController, RestSchema } from '../../shared/libs/index.js';
+import {
+  Logger,
+  UserServiceInterface,
+  Config,
+  Authentication,
+  RefreshTokenRepositoryInterface
+} from '../../shared/interface/index.js';
 import { Component, HttpMethod } from '../../shared/enum/index.js';
 import {RequestParams, RequestBody} from '../../shared/type/index.js';
 import { fillDTO } from '../../shared/util/index.js';
-import { CreateUserDto, LoginUserDto, UserRto } from './index.js';
-import {ValidateDtoMiddleware, UploadFileMiddleware} from '../../shared/middleware/index.js';
+import { CreateUserDto, LoginUserDto, UserRto, AuthorizedUserRdo } from './index.js';
+import {ValidateDtoMiddleware, UploadFileMiddleware, ParseRefreshTokenMiddleware} from '../../shared/middleware/index.js';
+import {RefreshTokenDto} from '../refresh-token/index.js';
 
 
 @injectable()
@@ -16,7 +22,9 @@ export class UserController extends BaseController {
   constructor(
     @inject(Component.PinoLogger) protected readonly logger: Logger,
     @inject(Component.UserService) private readonly userService: UserServiceInterface,
-    @inject(Component.RestConfig) private readonly config: Config<RestSchema>
+    @inject(Component.RestConfig) private readonly config: Config<RestSchema>,
+    @inject(Component.AuthenticationUser) private readonly authenticationUser: Authentication,
+    @inject(Component.RefreshTokenRepository) private readonly refreshTokenRepository: RefreshTokenRepositoryInterface
   ) {
     super(logger);
 
@@ -37,12 +45,20 @@ export class UserController extends BaseController {
       middlewares: [new ValidateDtoMiddleware(CreateUserDto)]
     });
     this.addRoute({
-      path: '/login',
+      path: '/authentication',
       method: HttpMethod.Get,
-      handler: this.login,
+      handler: this.authentication,
       middlewares: [new ValidateDtoMiddleware(LoginUserDto)]
     });
-    this.addRoute({ path: '/authentication', method: HttpMethod.Get, handler: this.authentication });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Delete,
+      handler: this.logout,
+      middlewares: [
+        new ValidateDtoMiddleware(RefreshTokenDto),
+        new ParseRefreshTokenMiddleware(this.config.get('JWT_REFRESH_SECRET'))
+      ]
+    });
   }
 
   public async uploadAvatar(req: Request, res: Response) {
@@ -61,29 +77,24 @@ export class UserController extends BaseController {
     this.created(res, fillDTO(UserRto, user));
   }
 
-  public async login(
+  public async authentication(
     {body}: Request<RequestParams, RequestBody, LoginUserDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.userService.login(body);
+    const user = await this.authenticationUser.verify(body);
+    const parAccessTokenAndrefreshToken = await this.authenticationUser.authenticate(user);
 
-    this.logger.info('You are authenticated and authorired');
-    this.ok(res, result);
+    this.logger.info(`A user with this email: ${user.email} is authorized`);
+    this.created(res, fillDTO(AuthorizedUserRdo, parAccessTokenAndrefreshToken));
   }
 
-  public async authentication(
-    _req: Request<RequestParams, RequestBody>,
-    _res: Response
+  public async logout(
+    {tokenPayload}: Request,
+    res: Response
   ): Promise<void> {
-    this.logger.warn('method not implemented');
+    await this.refreshTokenRepository.delet({refreshToken: tokenPayload.refreshToken as string, idUser: tokenPayload.id});
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Method not implemented',
-      {
-        where: 'user.controller.ts',
-        line: '54'
-      }
-    );
+    this.logger.info('logout completed');
+    this.ok(res, 'logout completed');
   }
 }

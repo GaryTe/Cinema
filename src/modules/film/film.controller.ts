@@ -14,7 +14,8 @@ import {
   DtoDocumentExistsMiddleware,
   ParamsDocumentExistsMiddleware,
   ValidateParamsObjectIdMiddleware,
-  ValidateQueryMiddleware
+  ValidateQueryMiddleware,
+  PrivateRouteMiddleware
 } from '../../shared/middleware/index.js';
 
 
@@ -35,9 +36,8 @@ export class FilmController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateFilmDto),
-        new ValidateDtoObjectIdMiddleware(['user']),
-        new DtoDocumentExistsMiddleware(this.userRepository, 'User', 'user'),
       ]
     });
     this.addRoute({
@@ -45,11 +45,12 @@ export class FilmController extends BaseController {
       method: HttpMethod.Patch,
       handler: this.editing,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(RedactionFilmDto),
-        new ValidateDtoObjectIdMiddleware(['user']),
-        new DtoDocumentExistsMiddleware(this.userRepository, 'User', 'user'),
         new ValidateParamsObjectIdMiddleware('idFilm'),
-        new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
+        new ValidateDtoObjectIdMiddleware(['user']),
+        new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm'),
+        new DtoDocumentExistsMiddleware(this.userRepository, 'User', 'user')
       ]
     });
     this.addRoute({
@@ -57,6 +58,7 @@ export class FilmController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.delet,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateParamsObjectIdMiddleware('idFilm'),
         new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
       ]
@@ -81,10 +83,10 @@ export class FilmController extends BaseController {
   }
 
   public async create(
-    { body }: Request<RequestParams, RequestBody, CreateFilmDto>,
+    { body, tokenPayload}: Request<RequestParams, RequestBody, CreateFilmDto>,
     res: Response
   ): Promise<void> {
-    const film = await this.filmService.create(body);
+    const film = await this.filmService.create({...body, user: tokenPayload.id});
 
     this.logger.info(`New film created: ${film.nameFilm}`);
     this.created(res, fillDTO(FullInformationFilmRdo, film));

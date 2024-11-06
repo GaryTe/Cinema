@@ -15,6 +15,5 @@ export class CreateCommentDto {
   @IsString({message: ErrorComment.idFilmIsString})
   public idFilm: string;
 
-  @IsString({message: ErrorComment.idUserIsString})
-  public idUser: string;
+  public idUser?: string;
 }

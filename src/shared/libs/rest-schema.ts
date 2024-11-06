@@ -12,6 +12,11 @@ export type RestSchema = {
   MONGO_DB_HOST: string;
   SALT: string;
   UPLOAD_DIRECTORY: string;
+  JWT_ACCESS_SECRET: string;
+  JWT_REFRESH_SECRET: string;
+  JWT_ALGORITHM: string;
+  TYP: string;
+  JWT_EXPIRED: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -61,6 +66,36 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Directory for upload files',
     format: String,
     env: 'UPLOAD_DIRECTORY',
+    default: null
+  },
+  JWT_ACCESS_SECRET: {
+    doc: 'Secret for sccessToken',
+    format: String,
+    env: 'JWT_ACCESS_SECRET',
+    default: null
+  },
+  JWT_REFRESH_SECRET: {
+    doc: 'Secret for refreshToken',
+    format: String,
+    env: 'JWT_REFRESH_SECRET',
+    default: null
+  },
+  JWT_ALGORITHM: {
+    doc: 'Encryption algorithm for token',
+    format: String,
+    env: 'JWT_ALGORITHM',
+    default: null
+  },
+  TYP: {
+    doc: 'Typ for token',
+    format: String,
+    env: 'TYP',
+    default: null
+  },
+  JWT_EXPIRED: {
+    doc: 'Expiration time for sccessToken',
+    format: String,
+    env: 'JWT_EXPIRED',
     default: null
   }
 });

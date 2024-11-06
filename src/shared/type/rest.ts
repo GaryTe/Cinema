@@ -44,3 +44,15 @@ export type RequestQuery = {
   limit?: string;
   genre?: string;
 }
+
+export type AccessAndRefreshToken = {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export type TokenPayload = {
+  email: string;
+  name: string;
+  id: string;
+  refreshToken?: string
+};
