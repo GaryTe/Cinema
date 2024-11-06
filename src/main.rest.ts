@@ -6,6 +6,7 @@ import {createUserContainer} from './modules/user/index.js';
 import {createFilmContainer} from './modules/film/index.js';
 import {createSelecteFilmContainer} from './modules/selecte-film/index.js';
 import {createCommentContainer} from './modules/comment/index.js';
+import {createRefreshTokenContainer} from './modules/refresh-token/index.js';
 import { Component } from './shared/enum/index.js';
 
 async function bootstrap() {
@@ -14,7 +15,8 @@ async function bootstrap() {
     createUserContainer(),
     createFilmContainer(),
     createSelecteFilmContainer(),
-    createCommentContainer()
+    createCommentContainer(),
+    createRefreshTokenContainer()
   );
 
   const restApplication = mainRestContainer.get<RestApplication>(Component.RestApplication);

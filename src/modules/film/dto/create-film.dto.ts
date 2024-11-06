@@ -10,7 +10,7 @@ import {
 
 import {Genres} from '../../../shared/enum/index.js';
 import {ErrorFilm} from '../../../shared/errors-validation/index.js';
-import {ValidationFormat, ValidationActors} from '../../../shared/util/index.js';
+import {ValidationFormat, ValidationActors, ValidationDateRelease} from '../../../shared/util/index.js';
 
 export class CreateFilmDto {
   @IsString({message: ErrorFilm.nameFilmIsString})
@@ -25,6 +25,7 @@ export class CreateFilmDto {
   public genres: Genres;
 
   @IsString({message: ErrorFilm.releaseIsString})
+  @Validate(ValidationDateRelease, {message: ErrorFilm.releaseDate})
   public release: string;
 
   @IsString({message: ErrorFilm.previewVideoIsString})
@@ -44,8 +45,7 @@ export class CreateFilmDto {
   @IsString({message: ErrorFilm.movieDurationIsString})
   public movieDuration: string;
 
-  @IsString({message: ErrorFilm.userIsString})
-  public user: string;
+  public user?: string;
 
   @IsString({message: ErrorFilm.posterIsString})
   @Validate(ValidationFormat, {message: ErrorFilm.poster})

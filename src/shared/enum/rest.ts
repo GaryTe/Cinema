@@ -19,7 +19,13 @@ export const Component = {
   CommentService: Symbol.for('CommentService'),
   CommentRepository: Symbol.for('CommentRepository'),
   CommentModel: Symbol.for('CommentModel'),
-  ExceptionFilter: Symbol.for('ExceptionFilter')
+  AppExceptionFilter: Symbol.for('AppExceptionFilter'),
+  AuthenticationExceptionFilter: Symbol.for('AuthenticationExceptionFilter'),
+  AuthenticationUser: Symbol.for('AuthenticationUser'),
+  RefreshTokenModel: Symbol.for('RefreshTokenModel'),
+  RefreshTokenRepository: Symbol.for('RefreshTokenRepository'),
+  RefreshTokenService: Symbol.for('RefreshTokenService'),
+  RefreshTokenController: Symbol.for('RefreshTokenController')
 } as const;
 
 export enum HttpMethod {

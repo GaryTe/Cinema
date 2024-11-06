@@ -4,7 +4,7 @@ import {DocumentType} from '@typegoose/typegoose';
 import {ValidatorConstraint, ValidatorConstraintInterface} from 'class-validator';
 
 import {CommentEntity} from '../../modules/comment/comment.entity.js';
-import {TAPY_FORMAT, ALL_FORMAT} from '../const/index.js';
+import {TAPY_FORMAT, ALL_FORMAT, REGULAR_DATE_VALUE} from '../const/index.js';
 
 export function getMongoURI(
   username: string,
@@ -79,5 +79,12 @@ export class ValidationActors implements ValidatorConstraintInterface {
     });
 
     return isValue;
+  }
+}
+
+@ValidatorConstraint({ name: 'release', async: false })
+export class ValidationDateRelease implements ValidatorConstraintInterface {
+  validate(date: string) {
+    return REGULAR_DATE_VALUE.test(date);
   }
 }

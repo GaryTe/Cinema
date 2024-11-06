@@ -5,6 +5,7 @@ export const ErrorFilm = {
   descriptionLength: 'description field is not valid. Min length 20, max length 1024.',
   genres: 'The genres field can be the following of the values: omedy, crime, documentary, drama, horror, family, romance, scifi, thriller.',
   releaseIsString: 'release field is not valid. Field release line.',
+  releaseDate: 'release field is not valid. Correct values for example 01.12.2024',
   previewVideoIsString: 'previewVideo field is not valid. Field previewVideo line.',
   videoIsString: 'video field is not valid. Field video line.',
   actorsIsArray: 'actors field is not valid. Field actors array.',

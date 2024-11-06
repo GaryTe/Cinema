@@ -1,13 +1,14 @@
 # Creating a new comment
 POST  http://localhost:3000/comment/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjhhNzhlNTJjYzEwMTQ0MzQ5ODc0YSIsImVtYWlsIjoiU3ZldGFAbWFpbC5jb20iLCJuYW1lIjoiU3ZldGEiLCJpYXQiOjE3MzA3ODI0OTksImV4cCI6MTczMDc4MjYxOX0._yL6aNIiE0qqey2jJIAhGlBSbAY-w7YCVZQrxHybWVY
 
 {
   "rating": 10,
-  "idFilm": "671f53e94f8b4282115477a2",
-  "idUser": "671de33b79c27a5f656cd2ea"
+  "text": "Очень интересный фильм. Рекомендую.",
+  "idFilm": "6729a4e3b3f173a2553497bf"
 }
 
 ###
 # Getting a list of comments for a specific movie
-GET   http://localhost:3000/comment/671f53e94f8b4282115477a2 HTTP/1.1
+GET   http://localhost:3000/comment/6729a4e3b3f173a2553497bf HTTP/1.1

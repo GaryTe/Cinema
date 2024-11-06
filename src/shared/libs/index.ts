@@ -9,3 +9,8 @@ export * from './mongo-database-client.js';
 export * from './base-controller.abstract.js';
 export * from './http-error.js';
 export * from './app-exception-filter.js';
+export * from './base-user-exception.js';
+export * from './authentication-exception-filter.js';
+export * from './user-not-found-exception.js';
+export * from './user-password-incorrect-exception.js';
+export * from './authentication-user.js';

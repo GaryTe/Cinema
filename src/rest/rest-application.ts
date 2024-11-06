@@ -9,6 +9,8 @@ import {UserController} from '../modules/user/index.js';
 import {FilmController} from '../modules/film/index.js';
 import {CommentController} from '../modules/comment/index.js';
 import {SelecteFilmController} from '../modules/selecte-film/index.js';
+import {RefreshTokenController} from '../modules/refresh-token/index.js';
+import {ParseAccessTokenMiddleware} from '../shared/middleware/parse-access-token.middleware.js';
 
 @injectable()
 export class RestApplication {
@@ -22,7 +24,9 @@ export class RestApplication {
     @inject(Component.FilmController) private readonly filmController: FilmController,
     @inject(Component.CommentController) private readonly commentController: CommentController,
     @inject(Component.SelecteFilmController) private readonly selecteFilmController: SelecteFilmController,
-    @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilter
+    @inject(Component.AppExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.AuthenticationExceptionFilter) private readonly authenticationExceptionFilter: ExceptionFilter,
+    @inject(Component.RefreshTokenController) private readonly refreshTokenController: RefreshTokenController
   ) {
     this.server = express();
   }
@@ -48,18 +52,22 @@ export class RestApplication {
     this.server.use('/film', this.filmController.router);
     this.server.use('/comment', this.commentController.router);
     this.server.use('/favorit', this.selecteFilmController.router);
+    this.server.use('/refreshToken', this.refreshTokenController.router);
   }
 
   private async _initMiddleware() {
+    const authenticateMiddleware = new ParseAccessTokenMiddleware(this.config.get('JWT_ACCESS_SECRET'));
     this.server.use(express.json());
     this.server.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
   private async _initExceptionFilters() {
-    this.server.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+    this.server.use(this.authenticationExceptionFilter.catch.bind(this.authenticationExceptionFilter));
+    this.server.use(this.appExceptionFilter.catch.bind(this.appExceptionFilter));
   }
 
 

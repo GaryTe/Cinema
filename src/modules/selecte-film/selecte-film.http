@@ -1,28 +1,28 @@
 # Creating a new movies to watch
 POST http://localhost:3000/favorit/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjhhNzhlNTJjYzEwMTQ0MzQ5ODc0YSIsImVtYWlsIjoiU3ZldGFAbWFpbC5jb20iLCJuYW1lIjoiU3ZldGEiLCJpYXQiOjE3MzA3ODM5OTIsImV4cCI6MTczMDc4NDExMn0.MtxcsqY7Y7ZNabycsU7p2TrptRXIvYj4HBFUt6lfgEU
 
 {
-  "idUser":"671de33b79c27a5f656cd2ea",
-  "idFilm": "671f53f54f8b4282115477a5"
+  "idFilm": "6729a4e3b3f173a2553497bf"
 }
 
 ###
 # Removing a movie from the watch list
 DELETE http://localhost:3000/favorit/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjhhNzhlNTJjYzEwMTQ0MzQ5ODc0YSIsImVtYWlsIjoiU3ZldGFAbWFpbC5jb20iLCJuYW1lIjoiU3ZldGEiLCJpYXQiOjE3MzA3ODM5OTIsImV4cCI6MTczMDc4NDExMn0.MtxcsqY7Y7ZNabycsU7p2TrptRXIvYj4HBFUt6lfgEU
 
 {
-  "idUser":"671de33b79c27a5f656cd2ea",
-  "idFilm": "671f53e94f8b4282115477a2"
+  "idFilm": "6729a4e3b3f173a2553497bf"
 }
 
 ###
 ## Get a list of movies to watch
 GET http://localhost:3000/favorit/list HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjhhNzhlNTJjYzEwMTQ0MzQ5ODc0YSIsImVtYWlsIjoiU3ZldGFAbWFpbC5jb20iLCJuYW1lIjoiU3ZldGEiLCJpYXQiOjE3MzA3ODM5OTIsImV4cCI6MTczMDc4NDExMn0.MtxcsqY7Y7ZNabycsU7p2TrptRXIvYj4HBFUt6lfgEU
 
 {
-  "idUser":"671de33b79c27a5f656cd2ea",
-  "idFilm": "671f53e94f8b4282115477a2"
+  "idFilm": "6729a4e3b3f173a2553497bf"
 }
