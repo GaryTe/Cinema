@@ -14,3 +14,7 @@ export * from './authentication-exception-filter.js';
 export * from './user-not-found-exception.js';
 export * from './user-password-incorrect-exception.js';
 export * from './authentication-user.js';
+export * from './validation.error.js';
+export * from './validation.exception-filter.js';
+export * from './http-exception-filter.js';
+export * from './path-transformer.js';

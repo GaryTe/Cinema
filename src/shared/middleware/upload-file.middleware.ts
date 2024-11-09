@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import multer, { diskStorage } from 'multer';
 import * as crypto from 'node:crypto';
-import dayjs from 'dayjs';
 
 import { Middleware } from '../interface/index.js';
 
@@ -12,11 +11,9 @@ export class UploadFileMiddleware implements Middleware {
   ) {}
 
   public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const [ year, month ] = dayjs('2025-12').format('YYYY MM').split(' ');
-    const underDirectory = `${year}/${month}`;
 
     const storage = diskStorage({
-      destination: `${this.uploadDirectory}/${underDirectory}`,
+      destination: this.uploadDirectory,
       filename: (_req, file: Express.Multer.File, callback) => {
         const filename = crypto.randomUUID();
         const fileExtension = file.originalname.split('.');
