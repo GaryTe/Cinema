@@ -56,3 +56,9 @@ export type TokenPayload = {
   id: string;
   refreshToken?: string
 };
+
+export type ValidationErrorField = {
+  property: string;
+  value: string;
+  messages: string[];
+};

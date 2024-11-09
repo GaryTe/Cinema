@@ -16,7 +16,6 @@ import { CreateUserDto, LoginUserDto, UserRto, AuthorizedUserRdo } from './index
 import {ValidateDtoMiddleware, UploadFileMiddleware, ParseRefreshTokenMiddleware} from '../../shared/middleware/index.js';
 import {RefreshTokenDto} from '../refresh-token/index.js';
 
-
 @injectable()
 export class UserController extends BaseController {
   constructor(
@@ -63,7 +62,7 @@ export class UserController extends BaseController {
 
   public async uploadAvatar(req: Request, res: Response) {
     this.created(res, {
-      filepath: req.file?.path
+      filename: req.file?.filename
     });
   }
 

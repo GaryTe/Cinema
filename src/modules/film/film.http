@@ -29,7 +29,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjhhNzhlNTJjYzEwMTQ0MzQ5ODc0YSIsImVtYWlsIjoiU3ZldGFAbWFpbC5jb20iLCJuYW1lIjoiU3ZldGEiLCJpYXQiOjE3MzA3ODU3OTcsImV4cCI6MTczMDc4NTkxN30.AGmznFZ1umF9FAqab8TNY7bJ81mGKdghjVXXpp40E-A
 
 {
-  "promoFilm": true,
+  "promoFilm": false,
   "backgroundColor": "white"
 }
 

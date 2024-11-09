@@ -25,7 +25,10 @@ export const Component = {
   RefreshTokenModel: Symbol.for('RefreshTokenModel'),
   RefreshTokenRepository: Symbol.for('RefreshTokenRepository'),
   RefreshTokenService: Symbol.for('RefreshTokenService'),
-  RefreshTokenController: Symbol.for('RefreshTokenController')
+  RefreshTokenController: Symbol.for('RefreshTokenController'),
+  ValidationExceptionFilter: Symbol.for('ValidationExceptionFilter'),
+  HttpExceptionFilter: Symbol.for('HttpExceptionFilter'),
+  PathTransformer: Symbol.for('PathTransformer')
 } as const;
 
 export enum HttpMethod {
@@ -34,4 +37,10 @@ export enum HttpMethod {
   Delete = 'delete',
   Patch = 'patch',
   Put = 'put',
+}
+
+export enum ApplicationError {
+  ValidationError = 'VALIDATION_ERROR',
+  CommonError = 'COMMON_ERROR',
+  ServiceError = 'SERVICE_ERROR',
 }

@@ -19,3 +19,7 @@ export const GENRES_LIST = [
 ];
 export const KEY_NAME = 'refreshToken';
 export const REGULAR_DATE_VALUE = /^\d{2}\.\d{2}\.\d{4}$/;
+export const STATIC_UPLOAD_ROUTE = '/upload';
+export const STATIC_FILES_ROUTE = '/static';
+export const STATIC_IMAGES = '/avatar.jpg';
+export const FILE = 'filename';

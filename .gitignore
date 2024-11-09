@@ -11,5 +11,5 @@ coverage
 *.log
 .env
 
+/mocks/
 /src/upload/
-mocks/

@@ -6,10 +6,13 @@ import {
   RestSchema,
   MongoDatabaseClient,
   AppExceptionFilter,
-  AuthenticationExceptionFilter
+  AuthenticationExceptionFilter,
+  ValidationExceptionFilter,
+  HttpExceptionFilter,
+  PathTransformer
 } from '../shared/libs/index.js';
 import { RestApplication, } from './index.js';
-import { Logger, Config, DatabaseClient, ExceptionFilter } from '../shared/interface/index.js';
+import { Logger, Config, DatabaseClient, ExceptionFilter, PathTransformerInterface } from '../shared/interface/index.js';
 import { Component } from '../shared/enum/index.js';
 
 export function createRestApplicationContainer() {
@@ -21,6 +24,9 @@ export function createRestApplicationContainer() {
   restApplicationContainer.bind<DatabaseClient>(Component.MongoDatabaseClient).to(MongoDatabaseClient).inSingletonScope();
   restApplicationContainer.bind<ExceptionFilter>(Component.AppExceptionFilter).to(AppExceptionFilter).inSingletonScope();
   restApplicationContainer.bind<ExceptionFilter>(Component.AuthenticationExceptionFilter).to(AuthenticationExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(Component.ValidationExceptionFilter).to(ValidationExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<ExceptionFilter>(Component.HttpExceptionFilter).to(HttpExceptionFilter).inSingletonScope();
+  restApplicationContainer.bind<PathTransformerInterface>(Component.PathTransformer).to(PathTransformer).inSingletonScope();
 
   return restApplicationContainer;
 }

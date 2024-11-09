@@ -124,3 +124,7 @@ export interface RefreshTokenServiceInterface {
     refreshToken: string
   }>
 }
+
+export interface PathTransformerInterface {
+  execute(data: Record<string, unknown>): Record<string, unknown>;
+}

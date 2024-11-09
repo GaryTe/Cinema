@@ -20,8 +20,8 @@ export class UserEntity extends defaultClasses.TimeStamps {
   @prop({ required: false, unique: true })
   public email!: string;
 
-  @prop({ default: null })
-  public avatar?: string | null;
+  @prop()
+  public avatar?: string;
 
   @prop({required: true, default: '' })
   private password?: string;

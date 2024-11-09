@@ -12,11 +12,13 @@ export type RestSchema = {
   MONGO_DB_HOST: string;
   SALT: string;
   UPLOAD_DIRECTORY: string;
+  STATIC_DIRECTORY: string;
   JWT_ACCESS_SECRET: string;
   JWT_REFRESH_SECRET: string;
   JWT_ALGORITHM: string;
   TYP: string;
   JWT_EXPIRED: string;
+  HOST: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -68,6 +70,12 @@ export const configRestSchema = convict<RestSchema>({
     env: 'UPLOAD_DIRECTORY',
     default: null
   },
+  STATIC_DIRECTORY: {
+    doc: 'Directory for static files',
+    format: String,
+    env: 'STATIC_DIRECTORY',
+    default: null
+  },
   JWT_ACCESS_SECRET: {
     doc: 'Secret for sccessToken',
     format: String,
@@ -97,5 +105,11 @@ export const configRestSchema = convict<RestSchema>({
     format: String,
     env: 'JWT_EXPIRED',
     default: null
-  }
+  },
+  HOST: {
+    doc: 'Host where started service',
+    format: String,
+    env: 'HOST',
+    default: 'localhost'
+  },
 });
