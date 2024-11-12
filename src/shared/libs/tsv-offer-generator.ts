@@ -10,16 +10,14 @@ export class TSVOfferGenerator implements OfferGenerator {
   public generate(): string {
     const nameFilm = this.mockData.nameFilm[getRandomIntInclusive(number.zero, this.mockData.nameFilm.length - 1)];
     const description = this.mockData.description[getRandomIntInclusive(number.zero, this.mockData.description.length - 1)];
-    const dataPublication = new Date(number.year, getRandomIntInclusive(number.one, number.twelf), getRandomIntInclusive(number.one, number.thirty)).toISOString();
     const genres = this.mockData.genres[getRandomIntInclusive(number.zero, this.mockData.genres.length - 1)];
-    const release = new Date(number.year, getRandomIntInclusive(number.one, number.twelf), getRandomIntInclusive(number.one, number.thirty)).toISOString();
+    const release = `${number.year}-${getRandomIntInclusive(number.one, number.twelf)}-${getRandomIntInclusive(number.one, number.thirty)}`;
     const rating = getRandomIntInclusive(number.zero, number.five);
     const previewVideo = this.mockData.previewVideo[getRandomIntInclusive(number.zero, this.mockData.previewVideo.length - 1)];
     const video = this.mockData.video[getRandomIntInclusive(number.zero, this.mockData.video.length - 1)];
     const actors = getElementsList(this.mockData.actors);
     const director = this.mockData.actors[getRandomIntInclusive(number.zero, this.mockData.actors.length - 1)];
     const movieDuration = `${getRandomIntInclusive(number.twelf, number.thirty)}мин`;
-    const numberComments = getRandomIntInclusive(number.one, number.thirty);
     const name = this.mockData.actors[getRandomIntInclusive(number.zero, this.mockData.actors.length - 1)];
     const email = this.mockData.emails[getRandomIntInclusive(number.one, this.mockData.emails.length - 1)];
     const avatar = this.mockData.avatars[getRandomIntInclusive(number.zero, this.mockData.avatars.length - 1)];
@@ -29,9 +27,9 @@ export class TSVOfferGenerator implements OfferGenerator {
     const backgroundColor = this.mockData.backgroundColor[getRandomIntInclusive(number.zero, this.mockData.backgroundColor.length - 1)];
 
     const string = [
-      nameFilm, description, dataPublication, genres, release,
+      nameFilm, description, genres, release,
       rating, previewVideo, video, actors, director,
-      movieDuration, numberComments, name, email, avatar,
+      movieDuration, name, email, avatar,
       password, poster, backgroundImag, backgroundColor
     ].join('\t');
 

@@ -1,7 +1,8 @@
 import { PackageJSONConfig } from '../type/index.js';
 import { number } from '../dictionary/index.js';
 import { Genres } from '../enum/index.js';
-import { Film } from '../type/cli.js';
+import { GeneralData } from '../type/cli.js';
+import dayjs from 'dayjs';
 
 export function isPackageJSONConfig(value: unknown): value is PackageJSONConfig {
   return (
@@ -31,12 +32,11 @@ export const getElementsList = (actors: string[]) => {
   return elementsList;
 };
 
-export const createOffer = (line: string): Film => {
+export const createOffer = (line: string): GeneralData => {
 
   const[
     nameFilm,
     description,
-    dataPublication,
     genres,
     release,
     rating,
@@ -45,7 +45,6 @@ export const createOffer = (line: string): Film => {
     actors,
     director,
     movieDuration,
-    numberComments,
     name,
     email,
     avatar,
@@ -65,21 +64,21 @@ export const createOffer = (line: string): Film => {
   const genresList = genres as Genres;
 
   return{
-    nameFilm,
-    description,
-    dataPublication: new Date(dataPublication),
-    genres: genresList,
-    release: new Date(release),
-    rating: Number.parseInt(rating, 10),
-    previewVideo,
-    video,
-    actors: actors.split(','),
-    director,
-    movieDuration,
-    numberComments: Number.parseInt(numberComments, 10),
-    user,
-    poster,
-    backgroundImag,
-    backgroundColor
+    dataFilm:{
+      nameFilm,
+      description,
+      genres: genresList,
+      release: dayjs(release).format(),
+      rating: Number.parseInt(rating, 10),
+      previewVideo,
+      video,
+      actors: actors.split(','),
+      director,
+      movieDuration,
+      poster,
+      backgroundImag,
+      backgroundColor
+    },
+    dataUser: user
   };
 };
