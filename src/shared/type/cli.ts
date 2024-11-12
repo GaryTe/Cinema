@@ -11,21 +11,24 @@ export type User = {
 export type Film = {
   nameFilm: string;
   description: string;
-  dataPublication: Date;
   genres: Genres;
-  release: Date;
+  release: string;
   rating: number;
   previewVideo: string;
   video: string;
   actors: string[];
   director: string;
   movieDuration: string;
-  numberComments: number;
-  user: User;
+  user?: string;
   poster: string;
   backgroundImag: string;
   backgroundColor: string;
 };
+
+export type GeneralData = {
+  dataFilm: Film;
+  dataUser: User;
+}
 
 export type MockServerData = {
   nameFilm: string[];

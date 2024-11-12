@@ -6,7 +6,6 @@ import { createSecretKey } from 'node:crypto';
 import { HttpError } from '../libs/index.js';
 import { TokenPayload } from '../type/index.js';
 import {Middleware} from '../interface/index.js';
-import {KEY_NAME} from '../const/index.js';
 
 function isTokenPayload(payload: unknown): payload is TokenPayload {
   return (
@@ -21,13 +20,19 @@ export class ParseRefreshTokenMiddleware implements Middleware{
   constructor(private readonly refreshSecret: string) {}
 
   public async execute(req: Request, _res: Response, next: NextFunction): Promise<void> {
-    const refreshToken = req.body[KEY_NAME];
+    const refreshToken = req.headers.refreshtoken as string;
+
+    if (!refreshToken) {
+      return next();
+    }
+
+    const [, token] = refreshToken.split(' ');
 
     try{
-      const { payload } = await jwtVerify(refreshToken, createSecretKey(this.refreshSecret, 'utf-8'));
+      const { payload } = await jwtVerify(token, createSecretKey(this.refreshSecret, 'utf-8'));
 
       if (isTokenPayload(payload)) {
-        req.tokenPayload = { ...payload, refreshToken: refreshToken };
+        req.tokenPayload = { ...payload, refreshToken: token };
         return next();
       } else {
         throw new Error('Bad refreshToken');

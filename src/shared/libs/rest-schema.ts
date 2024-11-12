@@ -17,7 +17,8 @@ export type RestSchema = {
   JWT_REFRESH_SECRET: string;
   JWT_ALGORITHM: string;
   TYP: string;
-  JWT_EXPIRED: string;
+  JWT_ACCESS_EXPIRED: string
+  JWT_REFRESH_EXPIRED: string
   HOST: string;
 }
 
@@ -100,10 +101,16 @@ export const configRestSchema = convict<RestSchema>({
     env: 'TYP',
     default: null
   },
-  JWT_EXPIRED: {
+  JWT_ACCESS_EXPIRED: {
     doc: 'Expiration time for sccessToken',
     format: String,
-    env: 'JWT_EXPIRED',
+    env: 'JWT_ACCESS_EXPIRED',
+    default: null
+  },
+  JWT_REFRESH_EXPIRED: {
+    doc: 'Expiration time for refreshToken',
+    format: String,
+    env: 'JWT_REFRESH_EXPIRED',
     default: null
   },
   HOST: {

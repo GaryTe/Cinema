@@ -13,8 +13,12 @@ import { Component, HttpMethod } from '../../shared/enum/index.js';
 import {RequestParams, RequestBody} from '../../shared/type/index.js';
 import { fillDTO } from '../../shared/util/index.js';
 import { CreateUserDto, LoginUserDto, UserRto, AuthorizedUserRdo } from './index.js';
-import {ValidateDtoMiddleware, UploadFileMiddleware, ParseRefreshTokenMiddleware} from '../../shared/middleware/index.js';
-import {RefreshTokenDto} from '../refresh-token/index.js';
+import {
+  ValidateDtoMiddleware,
+  UploadFileMiddleware,
+  ParseRefreshTokenMiddleware,
+  PrivateRouteMiddleware
+} from '../../shared/middleware/index.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -54,15 +58,17 @@ export class UserController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.logout,
       middlewares: [
-        new ValidateDtoMiddleware(RefreshTokenDto),
-        new ParseRefreshTokenMiddleware(this.config.get('JWT_REFRESH_SECRET'))
+        new ParseRefreshTokenMiddleware(this.config.get('JWT_REFRESH_SECRET')),
+        new PrivateRouteMiddleware()
       ]
     });
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
+  public async uploadAvatar({file}: Request, res: Response) {
+    const filename = file?.filename as string;
+    const path = file?.destination.split('/') as unknown as string[];
     this.created(res, {
-      filename: req.file?.filename
+      filename: `${path[path.length - 2]}/${path[path.length - 1]}/${filename}`
     });
   }
 

@@ -5,3 +5,9 @@ declare module 'express-serve-static-core' {
     tokenPayload: TokenPayload;
   }
 }
+
+declare module 'express-serve-static-core' {
+export interface IncomingHttpHeaders {
+  refreshToken: string;
+}
+}

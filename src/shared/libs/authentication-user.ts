@@ -36,7 +36,7 @@ export class AuthenticationUser implements Authentication {
         typ: this.config.get('TYP')
       })
       .setIssuedAt()
-      .setExpirationTime(this.config.get('JWT_EXPIRED'))
+      .setExpirationTime(this.config.get('JWT_ACCESS_EXPIRED'))
       .sign(secretKey);
 
     this.logger.info(`Create refreshToken for ${user.email}`);
@@ -46,6 +46,7 @@ export class AuthenticationUser implements Authentication {
         typ: this.config.get('TYP')
       })
       .setIssuedAt()
+      .setExpirationTime(this.config.get('JWT_REFRESH_EXPIRED'))
       .sign(_secretKey);
 
     await this.refreshTokenRepository.create({refreshToken: _refreshToken, idUser: user.id});

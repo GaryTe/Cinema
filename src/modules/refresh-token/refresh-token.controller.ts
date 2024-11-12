@@ -4,10 +4,9 @@ import { Request, Response } from 'express';
 import { BaseController, RestSchema } from '../../shared/libs/index.js';
 import { RefreshTokenServiceInterface, Logger, Config } from '../../shared/interface/index.js';
 import { Component, HttpMethod } from '../../shared/enum/index.js';
-import { RefreshTokenDto } from './index.js';
 import {
-  ValidateDtoMiddleware,
-  ParseRefreshTokenMiddleware
+  ParseRefreshTokenMiddleware,
+  PrivateRouteMiddleware
 } from '../../shared/middleware/index.js';
 
 
@@ -27,8 +26,8 @@ export class RefreshTokenController extends BaseController {
       method: HttpMethod.Post,
       handler: this.editing,
       middlewares: [
-        new ValidateDtoMiddleware(RefreshTokenDto),
-        new ParseRefreshTokenMiddleware(this.config.get('JWT_REFRESH_SECRET'))
+        new ParseRefreshTokenMiddleware(this.config.get('JWT_REFRESH_SECRET')),
+        new PrivateRouteMiddleware()
       ]
     });
   }

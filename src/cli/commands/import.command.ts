@@ -6,16 +6,17 @@ import {
   UserServiceInterface,
   UserRepositoryInterface,
   FilmServiceInterface,
-  FilmRepositoryInterface
+  FilmRepositoryInterface,
+  CommentRepositoryInterface
 } from '../../shared/interface/index.js';
 import { NameCommand } from '../../shared/enum/index.js';
 import { TSVFileReader } from '../../shared/libs/tsv-file-reader.js';
 import { mistake, info, createOffer, getMongoURI } from '../../shared/util/index.js';
 import {UserService, UserRepository, UserModel} from '../../modules/user/index.js';
 import {RestSchema, PinoLogger, RestConfig, MongoDatabaseClient} from '../../shared/libs/index.js';
-import {Film} from '../../shared/type/index.js';
+import {GeneralData} from '../../shared/type/index.js';
 import {FilmService, FilmRepository, FilmModel} from '../../modules/film/index.js';
-
+import {CommentRepository, CommentModel} from '../../modules/comment/index.js';
 
 export class ImportCommand implements Command {
   private userService: UserServiceInterface;
@@ -25,15 +26,17 @@ export class ImportCommand implements Command {
   private databaseClient: DatabaseClient;
   private filmService: FilmServiceInterface;
   private filmRepository: FilmRepositoryInterface;
+  private commentRepository: CommentRepositoryInterface;
 
   constructor(){
     this.logger = new PinoLogger();
-    this.userRepository = new UserRepository(UserModel);
-    this.userService = new UserService(this.userRepository, this.logger);
     this. config = new RestConfig(this.logger);
+    this.userRepository = new UserRepository(UserModel, this.config);
+    this.userService = new UserService(this.userRepository);
     this.databaseClient = new MongoDatabaseClient(this.logger);
+    this.commentRepository = new CommentRepository(CommentModel);
     this.filmRepository = new FilmRepository(FilmModel);
-    this.filmService = new FilmService(this.filmRepository, this.logger);
+    this.filmService = new FilmService(this.filmRepository, this.commentRepository);
   }
 
   public getName(): string {
@@ -41,9 +44,9 @@ export class ImportCommand implements Command {
   }
 
   private async onImportedLine(line: string, resolve: () => void) {
-    const film = createOffer(line);
+    const data = createOffer(line);
     try{
-      await this.saveOffer(film);
+      await this.saveOffer(data);
       resolve();
     }catch(error: unknown){
       console.log(mistake(error as Error));
@@ -54,16 +57,16 @@ export class ImportCommand implements Command {
     console.info(info(`${count} rows imported and converted to film object`));
   }
 
-  private async saveOffer(film: Film) {
-    const {user} = film;
+  private async saveOffer(data: GeneralData) {
+    const {dataFilm, dataUser} = data;
     const _user = await this.userService.create({
-      ...user
+      ...dataUser
     },
     this.config.get('SALT')
     );
 
     const _film = {
-      ...film,
+      ...dataFilm,
       user: _user.id
     };
 
