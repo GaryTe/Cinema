@@ -44,3 +44,12 @@ export enum ApplicationError {
   CommonError = 'COMMON_ERROR',
   ServiceError = 'SERVICE_ERROR',
 }
+
+export enum RPCProps {
+  Exchange = 'exchange.comment',
+  RoutingKey = 'comment',
+  Queue = 'queue.comment',
+  ExchangeFilm = 'exchange.film',
+  RoutingKeyFilm = 'film',
+  QueueFilm = 'queue.film'
+}

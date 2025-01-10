@@ -62,3 +62,21 @@ export type ValidationErrorField = {
   value: string;
   messages: string[];
 };
+
+export type Settings = {
+  exchange?: string;
+  type?: string;
+  queue?: string;
+  confirm?: boolean;
+  maxAttempts?: number;
+  timeout?: number;
+  consumerTag?: string;
+  durable?: boolean;
+  routingKey?: string;
+}
+
+export type MSG = {
+  idFilm: string;
+  limit: number;
+  delet: boolean;
+}

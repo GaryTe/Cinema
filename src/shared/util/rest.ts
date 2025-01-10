@@ -2,8 +2,9 @@ import * as crypto from 'node:crypto';
 import {ClassConstructor, plainToInstance} from 'class-transformer';
 import {DocumentType} from '@typegoose/typegoose';
 import {ValidatorConstraint, ValidatorConstraintInterface, ValidationError} from 'class-validator';
+import {Connection, RPCClient, ConsumerProps} from 'rabbitmq-client';
 
-import {ValidationErrorField} from '../type/index.js';
+import {ValidationErrorField, Settings} from '../type/index.js';
 import {CommentEntity} from '../../modules/comment/comment.entity.js';
 import {TAPY_FORMAT, ALL_FORMAT, REGULAR_DATE_VALUE} from '../const/index.js';
 import {ApplicationError} from '../enum/index.js';
@@ -99,4 +100,44 @@ export function createErrorObject(errorType: ApplicationError, error: string, de
 
 export function getFullServerPath(host: string, port: number) {
   return `http://${host}:${port}`;
+}
+
+export function getClientSettings(
+  connection: Connection,
+  settings: Settings
+): RPCClient {
+  const client = connection.createRPCClient({
+    confirm: settings.confirm,
+    maxAttempts: settings.maxAttempts,
+    timeout: settings.timeout
+  });
+
+  return client;
+}
+
+export function getConsumerSetting(
+  settings: Settings
+): ConsumerProps {
+  return ({
+    consumerTag: settings.consumerTag,
+    exchanges:[
+      {
+        durable: settings.durable,
+        exchange: settings.exchange ?? '',
+        type: settings.type
+      }
+    ],
+    queue: settings.queue,
+    queueOptions: {
+      durable: settings.durable,
+      queue: settings.queue
+    },
+    queueBindings: [
+      {
+        exchange: settings.exchange ?? '',
+        queue: settings.queue,
+        routingKey: settings.routingKey
+      }
+    ]
+  });
 }

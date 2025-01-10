@@ -16,6 +16,10 @@ export class PathTransformer implements PathTransformerInterface{
   }
 
   public execute(data: Record<string, unknown>): Record<string, unknown> {
+    if(!data) {
+      return data;
+    }
+
     if(!(Object.hasOwn(data, FILE))){
       return data;
     }

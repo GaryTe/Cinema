@@ -55,10 +55,7 @@ export class SelecteFilmController extends BaseController {
       method: HttpMethod.Get,
       handler: this.getAllFilms,
       middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(ValueFavoriteFilmDto),
-        new ValidateDtoObjectIdMiddleware(['idFilm']),
-        new DtoDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
+        new PrivateRouteMiddleware()
       ]
     });
   }
@@ -84,10 +81,10 @@ export class SelecteFilmController extends BaseController {
   }
 
   public async getAllFilms(
-    {body, tokenPayload}: Request<RequestParams, RequestBody, ValueFavoriteFilmDto>,
+    {tokenPayload}: Request<RequestParams, RequestBody, ValueFavoriteFilmDto>,
     res: Response
   ): Promise<void> {
-    const favoriteFilmsList = await this.selecteFilmService.getAllFilms({...body, idUser: tokenPayload.id});
+    const favoriteFilmsList = await this.selecteFilmService.getAllFilms({idUser: tokenPayload.id});
 
     this.logger.info(`${favoriteFilmsList.length} films returned`);
     this.ok(res, fillDTO(FavoriteFilmRdo, favoriteFilmsList));

@@ -6,5 +6,5 @@ export class ValueFavoriteFilmDto {
   public idUser?: string;
 
   @IsString({message: ErrorSelecteFilm.idFilmIsString})
-  public idFilm: string;
+  public idFilm?: string;
 }

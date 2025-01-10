@@ -22,3 +22,4 @@ export const STATIC_UPLOAD_ROUTE = '/upload';
 export const STATIC_FILES_ROUTE = '/static';
 export const STATIC_IMAGES = '/avatar.jpg';
 export const FILE = 'filename';
+export const TIMEOUT = 2000;

@@ -20,6 +20,9 @@ export type RestSchema = {
   JWT_ACCESS_EXPIRED: string
   JWT_REFRESH_EXPIRED: string
   HOST: string;
+  RABBITMQ_PORT: number
+  RABBITMQ_USER: string
+  RABBITMQ_PASSWORD: string
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -119,4 +122,22 @@ export const configRestSchema = convict<RestSchema>({
     env: 'HOST',
     default: 'localhost'
   },
+  RABBITMQ_PORT: {
+    doc: 'Port to connect to the RabbitMQ',
+    format: 'port',
+    env: 'RABBITMQ_PORT',
+    default: null
+  },
+  RABBITMQ_USER: {
+    doc: 'Username to connect to the RabbitMQ',
+    format: String,
+    env: 'RABBITMQ_USER',
+    default: null,
+  },
+  RABBITMQ_PASSWORD: {
+    doc: 'Password to connect to the RabbitMQ',
+    format: String,
+    env: 'RABBITMQ_PASSWORD',
+    default: null,
+  }
 });
