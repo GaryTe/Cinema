@@ -18,3 +18,4 @@ export * from './validation.error.js';
 export * from './validation.exception-filter.js';
 export * from './http-exception-filter.js';
 export * from './path-transformer.js';
+export * from './rabbit-mq-connection.js';

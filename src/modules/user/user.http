@@ -5,7 +5,6 @@ Content-Type: application/json
 {
   "name": "Vlad",
   "email": "Vlad@mail.com",
-  "avatar": "http://localhost:3000/upload/b01a423d-0ac8-46d7-a50b-f005c4525080.jpg",
   "password": "4891SP"
 }
 
@@ -15,7 +14,7 @@ GET   http://localhost:3000/user/authentication HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "Sveta@mail.com",
+  "email": "Vlad@mail.com",
   "password": "4891SP"
 }
 
