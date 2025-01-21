@@ -78,7 +78,6 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.userService.create(body, this.config.get('SALT'));
 
-    this.logger.info(`New user created with ${user.email}`);
     this.created(res, fillDTO(UserRto, user));
   }
 
@@ -89,7 +88,6 @@ export class UserController extends BaseController {
     const user = await this.authenticationUser.verify(body);
     const parAccessTokenAndrefreshToken = await this.authenticationUser.authenticate(user);
 
-    this.logger.info(`A user with this email: ${user.email} is authorized`);
     this.created(res, fillDTO(AuthorizedUserRdo, parAccessTokenAndrefreshToken));
   }
 
@@ -99,7 +97,6 @@ export class UserController extends BaseController {
   ): Promise<void> {
     await this.refreshTokenRepository.delet({refreshToken: tokenPayload.refreshToken as string, idUser: tokenPayload.id});
 
-    this.logger.info('logout completed');
     this.ok(res, 'logout completed');
   }
 }

@@ -45,7 +45,7 @@ export class CreateFilmDto {
   @IsString({message: ErrorFilm.movieDurationIsString})
   public movieDuration: string;
 
-  public user?: string;
+  public idUser?: string;
 
   @IsString({message: ErrorFilm.posterIsString})
   @Validate(ValidationFormat, {message: ErrorFilm.poster})

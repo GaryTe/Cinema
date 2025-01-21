@@ -7,7 +7,7 @@ export class FullInformationFilmRdo {
   @Expose()
   public id: string;
 
-  @Expose()
+  @Expose({ name: 'name_film' })
   public nameFilm: string;
 
   @Expose()
@@ -23,7 +23,7 @@ export class FullInformationFilmRdo {
   @Expose()
   public rating: number;
 
-  @Expose()
+  @Expose({ name: 'preview_video' })
   public previewVideo: string;
 
   @Expose()
@@ -35,10 +35,10 @@ export class FullInformationFilmRdo {
   @Expose()
   public director: string;
 
-  @Expose()
+  @Expose({name: 'movie_duration'})
   public movieDuration: string;
 
-  @Expose()
+  @Expose({name: 'count_comments'})
   public numberComments: number;
 
   @Expose()
@@ -48,15 +48,15 @@ export class FullInformationFilmRdo {
   @Expose()
   public poster: string;
 
-  @Expose()
+  @Expose({name: 'background_imag'})
   public backgroundImag: string;
 
-  @Expose()
+  @Expose({name: 'background_color'})
   public backgroundColor: string;
 
-  @Expose({ name: 'createdAt' })
+  @Expose({ name: 'created_at' })
   public datePublication: string;
 
-  @Expose()
+  @Expose({name: 'promo_film'})
   public promoFilm: boolean;
 }

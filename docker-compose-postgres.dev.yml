@@ -1,0 +1,42 @@
+services:
+  what.to.watch.postgres:
+    image: postgres:14-alpine
+    container_name: what.to.watch.postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - what.to.watch.blog:/var/lib/postgres/data
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d {POSTGRES_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - what.to.watch
+
+  what.to.watch.pgadmin:
+    image: dpage/pgadmin4
+    container_name: what.to.watch.pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - 8082:80
+    networks:
+      - what.to.watch
+
+volumes:
+  what.to.watch.blog:
+
+networks:
+  what.to.watch:
+      driver: bridge
+

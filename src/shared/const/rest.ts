@@ -1,7 +1,7 @@
 export const RETRY_COUNT = 5;
 export const RETRY_TIMEOUT = 1000;
 export const AMOUNT_RETURN_FILM = 60;
-export const SORT_DESCENDING = -1;
+export const SORT_DESCENDING = 'DESC';
 export const AMOUNT_RETURN_COMMENT = 50;
 export const DEFAULT_CONTENT_TYPE = 'application/json';
 export const TAPY_FORMAT = ['jpg', 'png'];
@@ -23,3 +23,5 @@ export const STATIC_FILES_ROUTE = '/static';
 export const STATIC_IMAGES = '/avatar.jpg';
 export const FILE = 'filename';
 export const TIMEOUT = 2000;
+export const errorComments = 'relation "comments" already exists';
+export const errorFilms = 'relation "films" already exists';

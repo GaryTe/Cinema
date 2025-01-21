@@ -1,0 +1,15 @@
+services:
+  what.to.watch.rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: what.to.watch.rabbitmq
+    ports:
+      - 1088:15672
+      - ${RABBITMQ_PORT}:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5

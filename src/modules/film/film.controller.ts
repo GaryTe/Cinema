@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
 import { BaseController } from '../../shared/libs/index.js';
-import { Logger, FilmServiceInterface, UserRepositoryInterface, FilmRepositoryInterface } from '../../shared/interface/index.js';
+import { Logger, FilmServiceInterface } from '../../shared/interface/index.js';
 import { Component, HttpMethod, Genres} from '../../shared/enum/index.js';
 import {RequestParams, RequestBody, ParamsFilmId, RequestQuery} from '../../shared/type/index.js';
 import { fillDTO } from '../../shared/util/index.js';
@@ -10,12 +10,8 @@ import { CreateFilmDto, RedactionFilmDto, FilmRdo, FullInformationFilmRdo } from
 import {AMOUNT_RETURN_FILM} from '../../shared/const/rest.js';
 import {
   ValidateDtoMiddleware,
-  ValidateDtoObjectIdMiddleware,
-  DtoDocumentExistsMiddleware,
-  ParamsDocumentExistsMiddleware,
-  ValidateParamsObjectIdMiddleware,
-  ValidateQueryMiddleware,
-  PrivateRouteMiddleware
+  PrivateRouteMiddleware,
+  ValidateQueryMiddleware
 } from '../../shared/middleware/index.js';
 
 
@@ -23,9 +19,7 @@ import {
 export class FilmController extends BaseController {
   constructor(
     @inject(Component.PinoLogger) protected readonly logger: Logger,
-    @inject(Component.FilmService) private readonly filmService: FilmServiceInterface,
-    @inject(Component.UserRepository) private readonly userRepository: UserRepositoryInterface,
-    @inject(Component.FilmRepository) private readonly filmRepository: FilmRepositoryInterface
+    @inject(Component.FilmService) private readonly filmService: FilmServiceInterface
   ) {
     super(logger);
 
@@ -46,11 +40,7 @@ export class FilmController extends BaseController {
       handler: this.editing,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(RedactionFilmDto),
-        new ValidateParamsObjectIdMiddleware('idFilm'),
-        new ValidateDtoObjectIdMiddleware(['user']),
-        new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm'),
-        new DtoDocumentExistsMiddleware(this.userRepository, 'User', 'user')
+        new ValidateDtoMiddleware(RedactionFilmDto)
       ]
     });
     this.addRoute({
@@ -58,9 +48,7 @@ export class FilmController extends BaseController {
       method: HttpMethod.Delete,
       handler: this.delet,
       middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateParamsObjectIdMiddleware('idFilm'),
-        new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
+        new PrivateRouteMiddleware()
       ]
     });
     this.addRoute({path: '/list', method: HttpMethod.Get, handler: this.getAllFilms});
@@ -73,11 +61,7 @@ export class FilmController extends BaseController {
     this.addRoute({
       path: '/show/:idFilm',
       method: HttpMethod.Get,
-      handler: this.show,
-      middlewares: [
-        new ValidateParamsObjectIdMiddleware('idFilm'),
-        new ParamsDocumentExistsMiddleware(this.filmRepository, 'Film', 'idFilm')
-      ]
+      handler: this.show
     });
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.showPromoFilm});
   }
@@ -86,20 +70,41 @@ export class FilmController extends BaseController {
     { body, tokenPayload}: Request<RequestParams, RequestBody, CreateFilmDto>,
     res: Response
   ): Promise<void> {
-    const film = await this.filmService.create({...body, user: tokenPayload.id});
+    const film = await this.filmService.create({...body, idUser: tokenPayload.id});
 
-    this.logger.info(`New film created: ${film.nameFilm}`);
-    this.created(res, fillDTO(FullInformationFilmRdo, film));
+    this.created(res, fillDTO(
+      FullInformationFilmRdo,
+      {
+        ...film,
+        numberComments: 0,
+        user: {
+          avatar: tokenPayload.avatar,
+          email: tokenPayload.email,
+          name: tokenPayload.name,
+          id: tokenPayload.id
+        }
+      }
+    ));
   }
 
   public async editing(
-    {body, params}: Request<ParamsFilmId, RequestBody, RedactionFilmDto>,
+    {body, params, tokenPayload}: Request<ParamsFilmId, RequestBody, RedactionFilmDto>,
     res: Response
   ): Promise<void> {
     const film = await this.filmService.editing(body, params.idFilm);
 
-    this.logger.info(`film: ${film.nameFilm}, has been updated`);
-    this.ok(res, fillDTO(FullInformationFilmRdo, film));
+    this.ok(res, fillDTO(
+      FullInformationFilmRdo,
+      {
+        ...film,
+        user: {
+          avatar: tokenPayload.avatar,
+          email: tokenPayload.email,
+          name: tokenPayload.name,
+          id: tokenPayload.id
+        }
+      }
+    ));
   }
 
   public async delet(
@@ -108,8 +113,7 @@ export class FilmController extends BaseController {
   ): Promise<void> {
     const film = await this.filmService.delet(params.idFilm);
 
-    this.logger.info(`film: ${film.nameFilm}, has been deleted`);
-    this.ok(res, fillDTO(FullInformationFilmRdo, film));
+    this.ok(res, film ? 'Movie card removed' : 'Movie card not deleted. Movie card does not exist in the database.');
   }
 
   public async getAllFilms(
@@ -120,7 +124,6 @@ export class FilmController extends BaseController {
     const _limit = Number(limit) ?? AMOUNT_RETURN_FILM;
 
     const filmsList = await this.filmService.getAllFilms(_limit);
-    this.logger.info(`${filmsList.length} films returned`);
     this.ok(res, fillDTO(FilmRdo, filmsList));
   }
 
@@ -133,7 +136,6 @@ export class FilmController extends BaseController {
     const _genre = genre ?? Genres.Comedy;
 
     const filmsList = await this.filmService.getAllFilmsOfGenre(_limit, _genre);
-    this.logger.info(`${filmsList.length} films returned`);
     this.ok(res, fillDTO(FilmRdo, filmsList));
   }
 
@@ -143,23 +145,15 @@ export class FilmController extends BaseController {
   ): Promise<void> {
     const film = await this.filmService.show(params.idFilm);
 
-    this.logger.info(`Film: ${film.nameFilm}, found and returned`);
-    this.ok(res, fillDTO(FullInformationFilmRdo, film));
+    this.ok(res, fillDTO(FullInformationFilmRdo, film ?? 'Movie not found'));
   }
 
   public async showPromoFilm(
     _req: Request<RequestParams, RequestBody>,
     res: Response
   ): Promise<void> {
-    const film = await this.filmService.showPromoFilm();
+    const promoFilm = await this.filmService.showPromoFilm();
 
-    if(!film) {
-      this.logger.info('Promo film not found');
-      this.ok(res);
-      return;
-    }
-
-    this.logger.info(`Promo film: ${film.nameFilm}, found and returned`);
-    this.ok(res, fillDTO(FilmRdo, film));
+    this.ok(res, fillDTO(FilmRdo, promoFilm ?? 'Promo film not found'));
   }
 }

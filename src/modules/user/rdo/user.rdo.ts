@@ -1,7 +1,7 @@
 import {Expose} from 'class-transformer';
 
 export class UserRto {
-  @Expose()
+  @Expose({name: '_id'})
   public id: string;
 
   @Expose()

@@ -7,19 +7,19 @@ export class FilmRdo {
   @Expose()
   public id: string;
 
-  @Expose()
+  @Expose({name: 'name_film' })
   public nameFilm: string;
 
-  @Expose({ name: 'createdAt' })
+  @Expose({ name: 'created_at' })
   public datePublication: string;
 
   @Expose()
   public genres: Genres;
 
-  @Expose()
+  @Expose({ name: 'preview_video' })
   public previewVideo: string;
 
-  @Expose()
+  @Expose({name: 'count_comments'})
   public numberComments: number;
 
   @Expose()
@@ -29,6 +29,6 @@ export class FilmRdo {
   @Expose()
   public poster: string;
 
-  @Expose()
+  @Expose({name: 'promo_film'})
   public promoFilm: boolean;
 }

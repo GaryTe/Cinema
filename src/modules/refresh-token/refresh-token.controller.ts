@@ -38,7 +38,6 @@ export class RefreshTokenController extends BaseController {
   ): Promise<void> {
     const newAccessAndRefreshToken = await this.refreshTokenService.editing(tokenPayload);
 
-    this.logger.info('A new couple accessToken and refreshToken has been created');
     this.created(res, newAccessAndRefreshToken);
   }
 }
