@@ -19,6 +19,7 @@ export type Detail ={
 }
 
 export type _Film = {
+  id: number;
   nameFilm: string;
   description: string;
   genres: Genres;
@@ -34,6 +35,7 @@ export type _Film = {
   poster: string;
   backgroundImag: string;
   backgroundColor: string;
+  id_user: string;
 }
 
 export type ParamsFilmId ={
@@ -51,6 +53,7 @@ export type AccessAndRefreshToken = {
 }
 
 export type TokenPayload = {
+  avatar: string;
   email: string;
   name: string;
   id: string;
@@ -79,4 +82,11 @@ export type MSG = {
   idFilm: string;
   limit: number;
   delet: boolean;
+}
+
+export type DataComment = {
+  id_user: string;
+  text: string;
+  rating: string;
+  id_film: string;
 }

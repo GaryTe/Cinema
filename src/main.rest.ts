@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { Container } from 'inversify';
+import {createTables} from './create-tables-postgres.js';
 
 import { RestApplication, createRestApplicationContainer} from './rest/index.js';
 import {createUserContainer} from './modules/user/index.js';
@@ -24,3 +25,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+createTables();

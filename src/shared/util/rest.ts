@@ -1,11 +1,9 @@
 import * as crypto from 'node:crypto';
 import {ClassConstructor, plainToInstance} from 'class-transformer';
-import {DocumentType} from '@typegoose/typegoose';
 import {ValidatorConstraint, ValidatorConstraintInterface, ValidationError} from 'class-validator';
 import {Connection, RPCClient, ConsumerProps} from 'rabbitmq-client';
 
 import {ValidationErrorField, Settings} from '../type/index.js';
-import {CommentEntity} from '../../modules/comment/comment.entity.js';
 import {TAPY_FORMAT, ALL_FORMAT, REGULAR_DATE_VALUE} from '../const/index.js';
 import {ApplicationError} from '../enum/index.js';
 
@@ -27,12 +25,12 @@ export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });
 }
 
-export const countRating = (commentsList: DocumentType<CommentEntity>[] | []) => {
+export const countRating = (rating: number[]) => {
   let count = 0;
 
-  if(commentsList.length > 0) {
-    commentsList.forEach((comment: DocumentType<CommentEntity>) => {
-      count += comment.rating;
+  if(rating.length > 0) {
+    rating.forEach((value: number) => {
+      count += value;
     });
   }
   return count;

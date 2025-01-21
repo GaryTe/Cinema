@@ -23,7 +23,8 @@ export class AuthenticationUser implements Authentication {
     const accessTokenPayload: TokenPayload = {
       id: user.id,
       email: user.email,
-      name: user.name
+      name: user.name,
+      avatar: user.avatar ?? ''
     };
 
     const jwtRefreshSecret = this.config.get('JWT_REFRESH_SECRET');

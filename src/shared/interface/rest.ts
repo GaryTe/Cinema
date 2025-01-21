@@ -3,9 +3,9 @@ import { Response, Router, Request, NextFunction } from 'express';
 
 import { UserEntity, CreateUserDto, LoginUserDto } from '../../modules/user/index.js';
 import { FilmEntity, CreateFilmDto, RedactionFilmDto } from '../../modules/film/index.js';
-import {_Film, AccessAndRefreshToken, TokenPayload} from '../type/index.js';
+import {_Film, AccessAndRefreshToken, TokenPayload, DataComment} from '../type/index.js';
 import {SelecteFilmEntity, ValueFavoriteFilmDto} from '../../modules/selecte-film/index.js';
-import {CreateCommentDto, CommentEntity} from '../../modules/comment/index.js';
+import {CreateCommentDto} from '../../modules/comment/index.js';
 import {HttpMethod} from '../enum/index.js';
 import {RefreshTokenEntity} from '../../modules/refresh-token/index.js';
 
@@ -37,24 +37,23 @@ export interface UserRepositoryInterface {
 }
 
 export interface FilmServiceInterface {
-  create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
+  create(dto: CreateFilmDto): Promise<_Film>;
   editing(dto: RedactionFilmDto, idFilm: string): Promise<_Film>;
-  delet(idFilm: string): Promise<DocumentType<FilmEntity>>;
+  delet(idFilm: string): Promise<number>;
   getAllFilms(count: number): Promise<_Film[] | []>;
   getAllFilmsOfGenre(count: number, genre: string): Promise<_Film[] | []>;
-  show(idFilm: string): Promise<_Film>;
-  showPromoFilm(): Promise<_Film | null>;
+  show(idFilm: string): Promise<_Film | undefined>;
+  showPromoFilm(): Promise<_Film | undefined>;
 }
 
 export interface FilmRepositoryInterface {
-  create(user: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
-  editing(dto: RedactionFilmDto, idFilm: string): Promise<DocumentType<FilmEntity>>;
-  delet(idFilm: string): Promise<DocumentType<FilmEntity>>;
-  getAllFilms(count: number): Promise<DocumentType<FilmEntity>[] | []>;
-  getAllFilmsOfGenre(count: number, genre: string): Promise<DocumentType<FilmEntity>[] | []>;
-  show(idFilm: string): Promise<DocumentType<FilmEntity>>;
-  showPromoFilm(): Promise<DocumentType<FilmEntity> | null>;
-  exists(idFilm: string): Promise<boolean>;
+  create(user: CreateFilmDto): Promise<_Film>;
+  editing(dto: RedactionFilmDto, idFilm: string): Promise<_Film>;
+  delet(idFilm: string): Promise<number>;
+  getAllFilms(count: number): Promise<_Film[] | []>;
+  getAllFilmsOfGenre(count: number, genre: string): Promise<_Film[] | []>;
+  show(idFilm: string): Promise<_Film>;
+  showPromoFilm(): Promise<_Film | undefined>;
 }
 
 export interface SelecteFilmServiceInterface {
@@ -70,14 +69,13 @@ export interface SelecteFilmRepositoryInterface {
 }
 
 export interface CommentServiceInterface {
-  create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>>;
-  getAllComments(idFilm: string): Promise<DocumentType<CommentEntity>[] | []>;
+  create(dto: CreateCommentDto): Promise<DataComment>;
+  getAllComments(idFilm: string): Promise<DataComment[] | []>;
 }
 
 export interface CommentRepositoryInterface {
-  create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>>;
-  getAllComments(idFilm: string, value?: number): Promise<DocumentType<CommentEntity>[] | []>;
-  delet(idFilm: string): Promise<void>;
+  create(dto: CreateCommentDto): Promise<DataComment>;
+  getAllComments(idFilm: string, value?: number): Promise<DataComment[] | []>;
 }
 
 export interface Middleware {

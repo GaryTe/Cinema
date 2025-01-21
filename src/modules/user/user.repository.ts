@@ -1,21 +1,46 @@
 import { DocumentType, types } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 import {StatusCodes} from 'http-status-codes';
+import {Connection} from 'rabbitmq-client';
 
 import { UserEntity, CreateUserDto } from './index.js';
 import { UserRepositoryInterface, Config } from '../../shared/interface/index.js';
-import {HttpError, RestSchema} from '../../shared/libs/index.js';
-import { Component } from '../../shared/enum/index.js';
-import {getFullServerPath} from '../../shared/util/index.js';
+import {HttpError, RestSchema, RebbitMQConnection} from '../../shared/libs/index.js';
+import { Component, RPCProps } from '../../shared/enum/index.js';
+import {getFullServerPath, getConsumerSetting} from '../../shared/util/index.js';
 import {STATIC_FILES_ROUTE} from '../../shared/const/index.js';
 import {STATIC_IMAGES} from '../../shared/const/index.js';
+
+const connection: Connection = await new RebbitMQConnection().connect();
 
 @injectable()
 export class UserRepository implements UserRepositoryInterface {
   constructor(
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
     @inject(Component.RestConfig) private readonly config: Config<RestSchema>
-  ) {}
+  ) {
+    connection.createConsumer(
+      getConsumerSetting({
+        consumerTag: 'VladVankov',
+        durable: true,
+        type: 'direct',
+        exchange: RPCProps.ExchangeUser,
+        routingKey: RPCProps.RoutingKeyUser,
+        queue: RPCProps.QueueUser
+      }), async ({body}, reply) => {
+        if(!Array.isArray(body)) {
+          const dataUser = await this.userModel.findById(body);
+          await reply(dataUser);
+        } else {
+          const usersList = [];
+          for await(const value of body) {
+            const dataUser = await this.userModel.findById(value.id_user);
+            usersList.push(dataUser);
+          }
+          await reply(usersList);
+        }
+      });
+  }
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
     dto.avatar = dto.avatar ?? `${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}${STATIC_FILES_ROUTE}${STATIC_IMAGES}`;

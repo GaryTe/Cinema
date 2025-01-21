@@ -17,12 +17,17 @@ export type RestSchema = {
   JWT_REFRESH_SECRET: string;
   JWT_ALGORITHM: string;
   TYP: string;
-  JWT_ACCESS_EXPIRED: string
-  JWT_REFRESH_EXPIRED: string
+  JWT_ACCESS_EXPIRED: string;
+  JWT_REFRESH_EXPIRED: string;
   HOST: string;
-  RABBITMQ_PORT: number
-  RABBITMQ_USER: string
-  RABBITMQ_PASSWORD: string
+  RABBITMQ_PORT: number;
+  RABBITMQ_USER: string;
+  RABBITMQ_PASSWORD: string;
+  POSTGRES_DB: string
+  POSTGRES_PORT: number
+  POSTGRES_USER: string
+  POSTGRES_PASSWORD: string
+  PGADMIN_EMAIL: string
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -139,5 +144,35 @@ export const configRestSchema = convict<RestSchema>({
     format: String,
     env: 'RABBITMQ_PASSWORD',
     default: null,
+  },
+  POSTGRES_DB: {
+    doc: 'DB-name PostgresDB',
+    format: String,
+    env: 'POSTGRES_DB',
+    default: null
+  },
+  POSTGRES_PORT: {
+    doc: 'Port for PostgresDB',
+    format: 'port',
+    env: 'POSTGRES_PORT',
+    default: 5432
+  },
+  POSTGRES_USER: {
+    doc: 'Username for PostgresDB',
+    format: String,
+    env: 'POSTGRES_USER',
+    default: null
+  },
+  POSTGRES_PASSWORD: {
+    doc: 'Password for PostgresDB',
+    format: String,
+    env: 'POSTGRES_PASSWORD',
+    default: null
+  },
+  PGADMIN_EMAIL: {
+    doc: 'Usre email for PostgresDB',
+    format: String,
+    env: 'PGADMIN_EMAIL',
+    default: null
   }
 });

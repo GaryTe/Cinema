@@ -1,24 +1,19 @@
-import { DocumentType } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
-import {RPCClient, Connection} from 'rabbitmq-client';
+import {Connection, RPCClient} from 'rabbitmq-client';
+import { DocumentType } from '@typegoose/typegoose';
 
 import {FilmServiceInterface, FilmRepositoryInterface} from '../../shared/interface/index.js';
-import {CreateFilmDto, FilmEntity, RedactionFilmDto} from './index.js';
+import {CreateFilmDto, RedactionFilmDto} from './index.js';
 import {Component, RPCProps} from '../../shared/enum/index.js';
-import {countRating, getClientSettings} from '../../shared/util/index.js';
+import {countRating, fillDTO} from '../../shared/util/index.js';
 import {_Film, MSG} from '../../shared/type/index.js';
 import {RebbitMQConnection} from '../../shared/libs/index.js';
-import {getConsumerSetting} from '../../shared/util/index.js';
+import {getConsumerSetting, getClientSettings} from '../../shared/util/index.js';
+import {UserRto, UserEntity} from '../user/index.js';
 
 const connection: Connection = await new RebbitMQConnection().connect();
-const rpcClient: RPCClient = getClientSettings(
-  connection,
-  {
-    confirm: true,
-    maxAttempts: 3,
-    timeout: 3000
-  }
-);
+let rpcClient: RPCClient;
+
 
 @injectable()
 export class FilmService implements FilmServiceInterface {
@@ -39,32 +34,36 @@ export class FilmService implements FilmServiceInterface {
         const dataFilm = await this.show(idFilm);
         await reply(dataFilm);
       });
+
+    rpcClient = getClientSettings(
+      connection,
+      {
+        confirm: true,
+        maxAttempts: 3,
+        timeout: 3000
+      }
+    );
   }
 
-  public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
+  public async create(dto: CreateFilmDto): Promise<_Film> {
     const film = await this.repository.create(dto);
     return film;
   }
 
   public async editing(dto:RedactionFilmDto, idFilm: string): Promise<_Film> {
-    const {body} = await rpcClient
-      .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm, limit: 0, delet: false});
     const film = await this.repository.editing(dto, idFilm);
 
     const _film = {
-      ...film.toObject(),
-      id: film.id,
-      rating: countRating(body),
-      numberComments: body.length
+      ...film,
+      rating: countRating(film.rating as unknown as number[])
     };
 
     return _film;
   }
 
-  public async delet(idFilm: string): Promise<DocumentType<FilmEntity>> {
-    await rpcClient
-      .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm, limit: 0, delet: true});
+  public async delet(idFilm: string): Promise<number> {
     const film = await this.repository.delet(idFilm);
+
     return film;
   }
 
@@ -72,19 +71,15 @@ export class FilmService implements FilmServiceInterface {
     const _filmsList = [];
 
     const filmsList = await this.repository.getAllFilms(limit);
+
     if(filmsList.length > 0) {
-      for await (const film of filmsList) {
-        const {body} = await rpcClient
-          .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm: film.id, limit: 0, delet: false});
-        if(body.length > 0) {
-          _filmsList.push({
-            ...film.toObject(),
-            id: film.id,
-            numberComments: body.length
-          });
-        }else{
-          _filmsList.push({...film.toObject(), id: film.id});
-        }
+      const {body} = await rpcClient
+        .send({exchange: RPCProps.ExchangeUser, routingKey: RPCProps.RoutingKeyUser}, filmsList);
+      for (const film of filmsList) {
+        _filmsList.push({
+          ...film,
+          user: body.find((item: DocumentType<UserEntity>) => fillDTO(UserRto, item).id === film.id_user)
+        });
       }
     }
 
@@ -95,56 +90,53 @@ export class FilmService implements FilmServiceInterface {
     const _filmsList = [];
 
     const filmsList = await this.repository.getAllFilmsOfGenre(limit, genre);
+
     if(filmsList.length > 0) {
-      for await (const film of filmsList) {
-        const {body} = await rpcClient
-          .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm: film.id, limit: 0, delet: false});
-        if(body.length > 0) {
-          _filmsList.push({
-            ...film.toObject(),
-            id: film.id,
-            numberComments: body.length
-          });
-        }else{
-          _filmsList.push({...film.toObject(), id: film.id});
-        }
+      const {body} = await rpcClient
+        .send({exchange: RPCProps.ExchangeUser, routingKey: RPCProps.RoutingKeyUser}, filmsList);
+      for (const film of filmsList) {
+        _filmsList.push({
+          ...film,
+          user: body.find((item: DocumentType<UserEntity>) => fillDTO(UserRto, item).id === film.id_user)
+        });
       }
     }
 
     return _filmsList;
   }
 
-  public async show(idFilm: string): Promise<_Film> {
-    const {body} = await rpcClient
-      .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm, limit: 0, delet: false});
+  public async show(idFilm: string): Promise<_Film | undefined> {
+    let _film: _Film | undefined = undefined;
+
     const film = await this.repository.show(idFilm);
 
-    const _film = {
-      ...film.toObject(),
-      id: film.id,
-      rating: countRating(body),
-      numberComments: body.length
-    };
+    if(film) {
+      const {body} = await rpcClient
+        .send({exchange: RPCProps.ExchangeUser, routingKey: RPCProps.RoutingKeyUser}, film.id_user);
+      _film = {
+        ...film,
+        rating: countRating(film.rating as unknown as number[]),
+        user: body
+      };
+    }
 
     return _film;
   }
 
-  public async showPromoFilm(): Promise<_Film | null> {
-    const film = await this.repository.showPromoFilm();
+  public async showPromoFilm(): Promise<_Film | undefined> {
+    let _promoFilm: _Film | undefined = undefined;
 
-    if(!film) {
-      return film;
+    const promoFilm = await this.repository.showPromoFilm();
+
+    if(promoFilm) {
+      const {body} = await rpcClient
+        .send({exchange: RPCProps.ExchangeUser, routingKey: RPCProps.RoutingKeyUser}, promoFilm.id_user);
+      _promoFilm = {
+        ...promoFilm,
+        user: body
+      };
     }
 
-    const {body} = await rpcClient
-      .send({exchange: RPCProps.Exchange, routingKey: RPCProps.RoutingKey}, {idFilm: film.id, limit: 0, delet: false});
-
-    const _film = {
-      ...film.toObject(),
-      id: film.id,
-      numberComments: body.length
-    };
-
-    return _film;
+    return _promoFilm;
   }
 }

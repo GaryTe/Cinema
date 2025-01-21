@@ -46,9 +46,9 @@ export enum ApplicationError {
 }
 
 export enum RPCProps {
-  Exchange = 'exchange.comment',
-  RoutingKey = 'comment',
-  Queue = 'queue.comment',
+  ExchangeUser = 'exchange.user',
+  RoutingKeyUser = 'user',
+  QueueUser = 'queue.user',
   ExchangeFilm = 'exchange.film',
   RoutingKeyFilm = 'film',
   QueueFilm = 'queue.film'
